@@ -80,7 +80,7 @@ export default {
     }
   },
   created() {
-    var newsAPIURL = "http://newsapi.org/v2/top-headlines?country=us&apiKey=7f7cf3684558439cbbb596fabb08ae74";    fetch(newsAPIURL)
+    var newsAPIURL = "https://newsapi.org/v2/everything?q=trump&from=2021-01-22&to=2021-01-22&sortBy=popularity&apiKey=7f7cf3684558439cbbb596fabb08ae74";    fetch(newsAPIURL)
       .then(res => res.json())
       .then(res => (this.newsList = res))
       .catch(error => console.log(error));
