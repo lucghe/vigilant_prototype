@@ -9,16 +9,15 @@
   <div class= "networks">
     <p>Select News Network:</p>
     <p>
-      <button>BBC One</button>
-      <button>Daily Mail</button>
-      <button>Telegraph</button>
-      <button>CNN</button>
-      <button>The Guardian</button>
-      <button>Fox News</button>
-      <button>New York Times</button>
-      <button>Economist</button>
-      <button>Washington Post</button>
-      <button>Euronews</button>
+      <button
+        v-for="(article, index) in newsList.articles"
+        :item="article"
+        :key="index"
+        @click="filter = article.source.name; active = index;"
+        :class="{ active: article.source.name == filter }"
+      >
+      {{ article.source.name }}
+      </button>
     </p>
     <p >Select Date:</p>
     <div class="date">
@@ -40,6 +39,19 @@
   </div>
   <div class= "articles">
       <p>Select Article:</p>
+      <div>
+        <ul class="newsContainer">
+          <li v-for="(article, index) in newsList.articles" :item="article" :key="index" class="news">
+            <h3>{{ article.title }}</h3>
+            <span>
+              Source: {{ article.source.name }} <br>
+              Short Description: <strong>{{ article.description }}</strong>
+              Link: {{ article.url }}
+            </span>
+            <br/><br/>
+          </li>
+        </ul>
+      </div>
   </div>
 </div>
 <footer>
@@ -50,7 +62,7 @@
 
 <script>
 // import VueyeDatepicker from 'vueye-datepicker'
-import Datepicker from 'vuejs-datepicker'
+import Datepicker from 'vuejs-datepicker';
 
 export default {
   name: 'App',
@@ -59,11 +71,28 @@ export default {
       date: {
         value:new Date(),
         formattedValue:''
-      }
+      },
+      fkey: "source.name",
+      filterList: ["All"],           
+      filter: "All",
+      newsList: [],
+      filteredNewsList: []
     }
   },
-  methods: {
+  created() {
+    var newsAPIURL = "http://newsapi.org/v2/top-headlines?country=us&apiKey=7f7cf3684558439cbbb596fabb08ae74";    fetch(newsAPIURL)
+      .then(res => res.json())
+      .then(res => (this.newsList = res))
+      .catch(error => console.log(error));
+  },
+  computed: {
     
+  },
+  methods: {
+
+  },
+  watch: {
+
   },
   components: {
     // VueyeDatepicker
