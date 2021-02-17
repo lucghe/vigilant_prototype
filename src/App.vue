@@ -11,19 +11,8 @@
     <div class="networks">      
       <p>
         <button class="active" @click="filter = ''">Show all</button>
-        <!-- <br/><br/>
-        <button
-          v-for="(article, index) in newsList.articles"
-          :item="article"
-          :key="index"
-          @click="filter = article.source.name; active = index;"
-          :class="{ active: article.source.name == filter }"
-        >
-        {{ article.source.name }}
-        </button>
-        <br/><br/>
-        <button v-for="article in newsList.articles" :key="article" :class="{ 'active': filter === article.source.name }" @click="filter = article.source.name">{{ article.source.name }}</button>-->
-        <br/>
+        <!--<button v-for="article in newsList.articles" :key="article" :class="{ 'active': filter === article.source.name }" @click="filter = article.source.name">{{ article.source.name }}</button>/
+        <button v-for="source in newsSources" :key="source" :class="{ 'active': filter === source }" @click="filter = source">{{ source }}</button>/-->
         <button v-for="source in uniqueSources" :key="source" :class="{ 'active': filter === source }" @click="filter = source">{{ source }}</button>
       </p>
     </div>
