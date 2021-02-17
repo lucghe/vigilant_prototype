@@ -6,20 +6,28 @@
     <img src="@/assets/Vigilant_Icon_red.png" alt="Vigilant Logo">
     <h1>vigilant</h1>
   </div>
-  <div class= "networks">
+  <div class= "networks-datepicker">
     <p>Select News Network:</p>
-    <p>
-      <button
-        v-for="(article, index) in newsList.articles"
-        :item="article"
-        :key="index"
-        @click="filter = article.source.name; active = index;"
-        :class="{ active: article.source.name == filter }"
-      >
-      {{ article.source.name }}
-      </button>
-    </p>
-    <p >Select Date:</p>
+    <div class="networks">      
+      <p>
+        <button class="active" @click="filter = ''">Show all</button>
+        <!-- <br/><br/>
+        <button
+          v-for="(article, index) in newsList.articles"
+          :item="article"
+          :key="index"
+          @click="filter = article.source.name; active = index;"
+          :class="{ active: article.source.name == filter }"
+        >
+        {{ article.source.name }}
+        </button>
+        <br/><br/>
+        <button v-for="article in newsList.articles" :key="article" :class="{ 'active': filter === article.source.name }" @click="filter = article.source.name">{{ article.source.name }}</button>-->
+        <br/>
+        <button v-for="source in uniqueSources" :key="source" :class="{ 'active': filter === source }" @click="filter = source">{{ source }}</button>
+      </p>
+    </div>
+    <p>Select Date:</p>
     <div class="date">
        <!-- <vueye-datepicker v-model="date" color="#fffff" format="dd/mm/yyyy"/> -->
       <datepicker :inline="true"></datepicker>
@@ -36,22 +44,28 @@
             <i class="fa fa-search"></i>
           </a>
       </div>   
-  </div>
+  </div>  
   <div class= "articles">
-      <p>Select Article:</p>
-      <div>
-        <ul class="newsContainer">
-          <li v-for="(article, index) in newsList.articles" :item="article" :key="index" class="news">
-            <h3>{{ article.title }}</h3>
-            <span>
-              Source: {{ article.source.name }} <br>
-              Short Description: <strong>{{ article.description }}</strong>
-              Link: {{ article.url }}
-            </span>
-            <br/><br/>
-          </li>
-        </ul>
-      </div>
+    <h2>Select Article:</h2>
+    <ul class="newsContainer">
+      <li v-for="(article, index) in filteredNews" :item="article" :key="index" class="news">
+        <a :href="article.url" style="cursor: pointer;">
+          <h3>{{ article.title }}</h3>
+          <span>
+            Source: {{ article.source.name }}<br/>
+            Short Description: {{ article.description }}<br/>
+            Link: {{ article.url }}
+          </span>
+        </a>
+          <h3>{{ article.title }}</h3>
+          <span>
+            Source: {{ article.source.name }}<br/>
+            Short Description: {{ article.description }}<br/>
+            Link: <a :href="article.url" style="cursor: pointer;">{{ article.url }}</a>
+          </span>
+          <br/><br/>
+      </li>
+    </ul>
   </div>
 </div>
 <footer>
@@ -71,12 +85,10 @@ export default {
       date: {
         value:new Date(),
         formattedValue:''
-      },
-      fkey: "source.name",
-      filterList: ["All"],           
-      filter: "All",
+      },       
       newsList: [],
-      filteredNewsList: []
+      newsSources: [],   
+      filter: ""
     }
   },
   created() {
@@ -86,7 +98,20 @@ export default {
       .catch(error => console.log(error));
   },
   computed: {
-    
+    uniqueSources() {
+      this.newsList.articles.forEach(article => {
+        if (!this.newsSources.includes(article.source.name)) {
+          this.newsSources.push(article.source.name);
+        }        
+      });
+      return this.newsSources;
+    },
+    filteredNews() {
+      if (!this.filter) {
+        return this.newsList.articles;
+      }
+      return this.newsList.articles.filter(p => p.source.name === this.filter);
+    }
   },
   methods: {
 
@@ -150,6 +175,12 @@ h1{
   letter-spacing: 5px;
   text-align: center;
 }
+div.networks {
+  margin:5px; 
+  padding:5px; 
+  height: 20%;
+  overflow: auto;
+}
 .networks{
   grid-area: n;
   padding: 5%;
@@ -197,6 +228,16 @@ input {
   color: grey;
   font-size: 1em;
 }
+ul.newsContainer {
+  list-style-type: none;
+  margin: 0;
+  padding: 1em;
+}
+div.articles {
+  padding:5px; 
+  overflow: auto; 
+  text-align:justify;
+}
 .articles{
   grid-area: a;
   background-color: #CBD9D9;
@@ -210,6 +251,11 @@ input {
   padding: 40px 0 0 0;
 }
 p{
+  font-size: 20px;
+  font-family: "Woodford Bourne", Helvetica, sans-serif;
+  padding: 10px 0 10px 0;
+}
+h2{
   font-size: 20px;
   font-family: "Woodford Bourne", Helvetica, sans-serif;
   padding: 10px 0 10px 0;
